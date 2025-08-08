@@ -1,3 +1,5 @@
+
+```python
 from bookshelf.models import Book
 
 book = Book.objects.create(
@@ -7,6 +9,12 @@ book = Book.objects.create(
 )
 book
 # <Book: 1984 by George Orwell (1949)>
+
+
+
+
+
+
 
 
 
