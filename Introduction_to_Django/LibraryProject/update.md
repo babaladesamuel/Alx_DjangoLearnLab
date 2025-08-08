@@ -9,6 +9,7 @@ book.save()
 book
 # <Book: Nineteen Eighty-Four by George Orwell (1949)>
 
+curl -X PUT http://localhost:8000/books/1/ -H "Content-Type: application/json" -d '{"title": "Updated Book", "author": "Jane Doe"}'
 
 
 
