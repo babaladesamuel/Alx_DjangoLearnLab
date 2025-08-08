@@ -1,14 +1,11 @@
 
-#### `delete.md`
-```markdown
-```python
 from bookshelf.models import Book
+
 book = Book.objects.get(title="Nineteen Eighty-Four")
 book.delete()
+# (1, {'bookshelf.Book': 1})
+
 Book.objects.all()
 # <QuerySet []>
-curl -X DELETE http://localhost:8000/books/1/
-
-
 
 
