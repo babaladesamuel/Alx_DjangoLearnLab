@@ -14,9 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
 from django.http import HttpResponse
+from django.urls import path, include
+from django.contrib import admin
 
 def home(request):
     return HttpResponse("Welcome to the Book API")
@@ -24,5 +24,5 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('', home),  # Root URL now returns a simple message
+    path('', home),  # Add this to serve a simple homepage at /
 ]
