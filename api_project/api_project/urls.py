@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.http import HttpResponse
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
 
 def home(request):
@@ -23,6 +24,7 @@ def home(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+  path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # Token endpoint
+path('api/', include('api.urls')),
     path('', home),  # Add this to serve a simple homepage at /
 ]
