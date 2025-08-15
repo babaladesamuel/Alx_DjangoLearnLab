@@ -1,77 +1,35 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
 
-# -------------------------
-# List all books
-# -------------------------
-class BookListView(generics.ListAPIView):
-    """
-    GET: Retrieve a list of all books.
-    Accessible to everyone (authenticated or not).
-    """
+# List all books or create a new one (read is open, write requires auth)
+class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-
-# -------------------------
-# Retrieve one book by ID
-# -------------------------
+# Retrieve a single book (read is open, write requires auth)
 class BookDetailView(generics.RetrieveAPIView):
-    """
-    GET: Retrieve a single book by ID.
-    Accessible to everyone (authenticated or not).
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-
-# -------------------------
-# Create a new book
-# -------------------------
+# Create a book (only logged-in users)
 class BookCreateView(generics.CreateAPIView):
-    """
-    POST: Create a new book.
-    Restricted to authenticated users.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        # Custom behavior: just save normally, but could log user here
-        serializer.save()
-
-
-# -------------------------
-# Update a book
-# -------------------------
+# Update a book (only logged-in users)
 class BookUpdateView(generics.UpdateAPIView):
-    """
-    PUT/PATCH: Update an existing book.
-    Restricted to authenticated users.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def perform_update(self, serializer):
-        # Could add custom logging or validation here
-        serializer.save()
-
-
-# -------------------------
-# Delete a book
-# -------------------------
+# Delete a book (only logged-in users)
 class BookDeleteView(generics.DestroyAPIView):
-    """
-    DELETE: Remove a book.
-    Restricted to authenticated users.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [IsAuthenticated]
