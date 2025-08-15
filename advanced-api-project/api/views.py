@@ -1,12 +1,14 @@
+from django_filters import rest_framework as filters
+from rest_framework import generics, permissions, filters as drf_filters
 from django.shortcuts import render
-from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
 
+
 # List all books or create a new one (read is open, write requires auth)
 class BookListView(generics.ListCreateAPIView):
-   """
+    """
     Supports:
     - Filtering:
         ?title=Things Fall Apart
@@ -26,23 +28,25 @@ class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    # Explicit backends (in addition to global settings — harmless and clear)
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
-    # Filtering: allow multiple lookups on fields (django-filter)
+    # Enable filtering, searching, ordering
+    filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter, drf_filters.OrderingFilter]
+
+    # Filtering options (Step 1)
     filterset_fields = {
         'title': ['exact', 'icontains'],
         'publication_year': ['exact', 'gte', 'lte'],
-        'author': ['exact'],               # filter by author ID
+        'author': ['exact'],                # filter by author ID
         'author__name': ['exact', 'icontains'],  # filter by author name
     }
 
-    # Searching (DRF SearchFilter): uses icontains under the hood
+    # Search options (Step 2)
     search_fields = ['title', 'author__name']
 
-    # Ordering (DRF OrderingFilter)
+    # Ordering options (Step 3)
     ordering_fields = ['id', 'title', 'publication_year', 'author__name']
-    ordering = ['title']  # default
+    ordering = ['title']  # Default ordering
+
 
 # Retrieve a single book (read is open, write requires auth)
 class BookDetailView(generics.RetrieveAPIView):
@@ -50,17 +54,20 @@ class BookDetailView(generics.RetrieveAPIView):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+
 # Create a book (only logged-in users)
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
+
 # Update a book (only logged-in users)
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
+
 
 # Delete a book (only logged-in users)
 class BookDeleteView(generics.DestroyAPIView):
