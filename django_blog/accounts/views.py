@@ -1,6 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+@login_required
+def profile(request):
+    if request.method == "POST":
+        request.user.first_name = request.POST.get("first_name", request.user.first_name)
+        request.user.last_name = request.POST.get("last_name", request.user.last_name)
+        request.user.email = request.POST.get("email", request.user.email)
+        request.user.save()
+        return redirect("profile")
+    return render(request, "accounts/profile.html")
 
 def register(request):
     form = UserCreationForm()
